@@ -10,9 +10,9 @@
 <br>
 
 ## About
-> 這是一個我自己做的聊天室專案利用Websockt技術。
-> 前端利用Vue3+Vuex技術，介面才用Bootstrap5+ElementUI+素材整合而成。
-> 後端採用Asp.net core建立Restful API & webscoket
+###### 這是一個我自己做的聊天室專案利用Websockt技術。
+###### 前端利用Vue3+Vuex技術，介面才用Bootstrap5+ElementUI+素材整合而成。
+###### 後端採用Asp.net core建立Restful API & webscoket
 
 
 ## Languages and Tools
