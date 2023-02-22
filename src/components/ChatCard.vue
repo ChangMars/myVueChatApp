@@ -1,7 +1,12 @@
 <template>
   <div class="container-fluid">
-    <div class="row flex-nowrap overflow-auto ">
-      <div class="col-sm" style="text-align: center;" v-for="item in dataMsg" :key="item.id">
+    <div class="row flex-nowrap overflow-auto" style="margin-top: 1px">
+      <div
+        class="col-sm"
+        style="text-align: center"
+        v-for="item in dataMsg"
+        :key="item.id"
+      >
         <svg
           class="bd-placeholder-img rounded-circle"
           width="80"
@@ -12,20 +17,46 @@
           preserveAspectRatio="xMidYMid slice"
           focusable="false"
         >
-          <image :href="item.url" width="100%" height="100%"></image>
+          <image
+            :href="item.url"
+            :alt="item.sn"
+            width="100%"
+            height="100%"
+          ></image>
         </svg>
-        <h3>{{ item.sn }}</h3>
-        <h6>
-          {{ item.department }}
-        </h6>
-        <p><a class="btn btn-secondary btn-sm" href="#">Details &raquo;</a></p>
+        <p style="margin: 0px">{{ item.sn }}</p>
+        <p style="margin: 0px">{{ item.department }}</p>
+        <p style="margin: 0px">
+          <a class="btn btn-secondary btn-sm" @click="onDetails(item)"
+            >Details &raquo;
+          </a>
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { h } from 'vue'
+import { ElMessageBox } from 'element-plus'
+
 export default {
-  props: ['dataMsg']
+  render() {
+    return h('div')
+  },
+  props: ['dataMsg'],
+  methods: {
+    onDetails(item) {
+      console.log('onDetails', item)
+      let newDatas = []
+      for (var key in item) {
+        newDatas.push(h('p', null, key + ':' + item[key]))
+      }
+      ElMessageBox({
+        title: '詳細資料',
+        message: h('div', null, newDatas)
+      })
+    }
+  }
 }
 </script>

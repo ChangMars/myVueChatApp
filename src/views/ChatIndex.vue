@@ -1,17 +1,48 @@
 <template>
-  <Card :data-msg="userlist"></Card>
-  <div class="app">
-    <div ref="messages" class="messages">
-      <Message
-        v-for="message in messages"
-        :key="message.id"
-        :class="['message', { right: message.isMine }]"
-        :dark="message.isMine"
-        :text="message.text"
-        :author="message.author"
-      />
+  <div class="container-fluid">
+    <div class="row align-items-start">
+      <div class="accordion" id="accordionChatList" ref="accordionChatList">
+        <div class="accordion-item">
+          <h6 class="accordion-header d-grid gap-2" id="headingOne">
+            <button
+              class="btn btn-outline-dark"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#collapseOne"
+              aria-expanded="true"
+              aria-controls="collapseOne"
+            >
+              聊天室成員列表
+            </button>
+          </h6>
+          <div
+            id="collapseOne"
+            class="accordion-collapse collapse"
+            aria-labelledby="headingOne"
+            data-bs-parent="#accordionChatList"
+          >
+            <Card :data-msg="this.$store.state.ws.clientRes"></Card>
+          </div>
+        </div>
+      </div>
     </div>
-    <ChatBox class="chat-box" @emit-submit="onSubmit" />
+    <div class="row align-items-center">
+      <div class="app" :style="appstyle">
+        <div ref="messages" class="messages" v-on:property="test">
+          <Message
+            v-for="message in this.$store.state.ws.wsRes"
+            :key="message.id"
+            :class="['message', { right: message.isMine }]"
+            :dark="message.isMine"
+            :text="message.text"
+            :author="message.author"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row align-items-end">
+      <ChatBox class="chat-box" @emit-submit="onSubmit" />
+    </div>
   </div>
 </template>
 
@@ -19,7 +50,7 @@
 import Message from '@/components/ChatMessage.vue'
 import ChatBox from '@/components/ChatBox.vue'
 import Card from '@/components/ChatCard.vue'
-import axios from 'axios'
+import { sendSocketMessage } from '@/utils/api'
 
 export default {
   // Here we register the components which
@@ -29,110 +60,68 @@ export default {
     Message,
     Card
   },
+  methods: {
+    // This method will be called when a new message is sent
+    onSubmit(event, text) {
+      console.log('chatindex-onsubmit')
+      console.log('歷史聊天數量:', this.$store.state.ws.wsRes.length)
+      sendSocketMessage(text)
+    },
+    autoChatMsgStyle() {
+      // console.log('視窗高度',document.documentElement.clientHeight)
+      // console.log('手風琴元件高度',this.$refs.accordionChatList.offsetHeight)
+      this.appstyle.height =
+        document.documentElement.clientHeight -
+        this.$refs.accordionChatList.offsetHeight -
+        124 +
+        'px'
+    }
+  },
   data() {
     return {
-      user: undefined,
-      messages: [],
-      userlist: [],
-      timer: null
+      appstyle: {
+        height: 0 + 'px'
+      }
+    }
+  },
+  watch: {
+    // 監聽vuex 中的變數是否發生變化
+    '$store.state.ws.wsRes.length'(n, o) {
+      console.log('訊息vuex數值發生變化', n, o)
+      this.$nextTick(() => {
+        // scroll刷新移動到最底部
+        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
+        console.log('MsgScrollHeight', this.$refs.messages.scrollHeight)
+      })
     }
   },
   mounted() {
-    this.getUserList()
-    this.timer = setInterval(() => { // 定時刷新Timer
-      setTimeout(this.getUserList, 0)
-    }, 1000 * 60 * 10) // 10分鐘檢查一次
-  },
-  // This is going to be called
-  //  when the component gets rendered
-  created() {
-    this.getConnection()
-  },
-  methods: {
-    getConnection() {
-      const ipaddress = 'wss://ylcwss01.yulon-motor.com.tw/pmswagger/websocket'
-      const token = localStorage.getItem('token')
-      window.ws = new WebSocket(`${ipaddress}?token=${token}`) // 連接websocket
-      window.ws.onopen = () => {
-        if (ws.readyState === 1) {
-          const jsonobj = {
-            ReceiveClientId: '',
-            action: 'join',
-            msg: '1',
-            nick: localStorage.getItem('name'),
-          }
-          const jsonstr = JSON.stringify(jsonobj)
-          window.ws.send(jsonstr)
-          console.log('進入room')
-        }
-      }
-      window.ws.onclose = () => {
-        // this.$router.push('/login')
-      }
-      window.ws.onmessage = (msg) => {
-        console.log(msg.data)
-        if(msg.data.match(/join room 1 success .$/) || msg.data.match(/leave room 1 success .$/))
-        {
-          this.getUserList()
-        }
-        else
-        {
-          const msgtemp = {
-            id: localStorage.getItem('empno'),
-            isMine:
-              msg.data.split(':')[0].trim() === localStorage.getItem('name'),
-            text: msg.data.split(':')[1].trim(),
-            author: msg.data.split(':')[0].trim()
-          }
-          this.messages.push(msgtemp)
-          this.$nextTick(() => { // scroll刷新移動到最底部
-            this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight
-            console.log(this.$refs.messages.scrollHeight)
-          })
-        }
-      }
-      console.log('Websocket connection!')
-    },
-
-    // This method will be called when a new message is sent
-    onSubmit(event, text) {
-      // event.preventDefault();
-      const jsonobj = {
-        ReceiveClientId: '',
-        action: 'send_to_room',
-        msg: text,
-        nick: localStorage.getItem('name')
-      }
-      const jsonstr = JSON.stringify(jsonobj)
-      if (window.ws.OPEN && window.ws.readyState === 1) {
-        window.ws.send(jsonstr)
-      }
-      console.log(window.ws.readyState)
-      // 如果WebSocket关闭，显示消息
-      if (window.ws.readyState === 2 || window.ws.readyState === 3) {
-        console.log('WebSocket已關閉無法傳遞訊息')
-        this.$router.push('/login')
-      }
-    },
-
-    getUserList() {
-      const api =
-        'https://ylcwss01.yulon-motor.com.tw/pmswagger/api/websocket/getroomuserdetail?RoomNo=1'
-      axios.get(api).then((res) => {
-        console.log(res)
-        if (res.status === 200) {
-          // res.data.forEach(element => {
-          //   if(this.userlist.findIndex((x) => x.EmpNo === element.EmpNo) === -1)
-          //   {
-          //     this.userlist.push(element)
-          //   }
-          // });
-          this.userlist = res.data
-        } else {
-          console.log(res.data)
-        }
-      })
+    // 在加載時根據窗口大小調整樣式
+    this.autoChatMsgStyle()
+    let _this = this // 赋值vue的this 避免外部引用沒有vue 元件
+    window.onresize = () => {
+      // 監聽視窗改變時
+      //調用method事件
+      _this.autoChatMsgStyle()
     }
+    document // 監聽collapse元件隱藏事件
+      .getElementById('collapseOne')
+      .addEventListener('hidden.bs.collapse', function () {
+        console.log(
+          'collapse元件隱藏',
+          _this.$refs.accordionChatList.offsetHeight
+        )
+        _this.autoChatMsgStyle()
+      })
+    document // 監聽collapse元件顯示事件
+      .getElementById('collapseOne')
+      .addEventListener('shown.bs.collapse', function () {
+        console.log(
+          'collapse元件顯示',
+          _this.$refs.accordionChatList.offsetHeight
+        )
+        _this.autoChatMsgStyle()
+      })
   }
 }
 </script>
@@ -178,7 +167,7 @@ input {
 
 <style scoped>
 .app {
-  height: 70vh;
+  height: 891px;
   display: flex;
   flex-direction: column;
 }

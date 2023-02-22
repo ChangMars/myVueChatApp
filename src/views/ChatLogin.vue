@@ -1,11 +1,9 @@
 <template>
   <div id="app">
-    <div id="login">
+    <div id="login" v-loading="isLoading">
       <div id="description">
         <h1>Login</h1>
-        <p>
-          歡迎使用YouAlone聊天室，請使用工號和密碼登入。
-        </p>
+        <p>歡迎使用YouAlone聊天室，請使用工號和密碼登入。</p>
       </div>
       <div id="form">
         <form @submit.prevent="signIn">
@@ -21,11 +19,11 @@
           <label for="password">Password</label>&nbsp;
           <i class="fas"></i>
           <input
+            type="password"
             id="password"
             v-model="user.password"
-            placeholder="**********"
+            placeholder="請輸入密碼"
           />
-
           <button type="submit">Log in</button>
         </form>
       </div>
@@ -34,7 +32,8 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { login } from '../utils/api'
+import { ref } from 'vue'
 
 export default {
   data() {
@@ -42,35 +41,22 @@ export default {
       user: {
         username: '',
         password: ''
-      }
+      },
+      isLoading: false
     }
   },
-  computed() {},
   methods: {
     signIn() {
-      const headers = {
-        accept: 'application/json',
-        'Content-Type': 'application/json;charset=utf-8'
-      }
-      // const api = `${process.env.VUE_APP_API}admin/signin`;
-      const api =
-        'https://ylcwss01.yulon-motor.com.tw/pmswagger/api/authenticate/login'
-      axios.post(api, this.user).then((res) => {
-        console.log(res)
-        if (res.status === 200) {
-          console.log(res.data)
-          const { department, empno, name, token, expiration } = res.data
-          localStorage.setItem('department', department)
-          localStorage.setItem('empno', empno)
-          localStorage.setItem('name', name)
-          localStorage.setItem('token', token)
-          localStorage.setItem('expiration', expiration)
-          // document.cookie = `hexToken=${token}; expires=${new Date(expiration)}`; // 存放在cookie方式
-          this.$router.push('/chat')
-        } else {
-          console.log(res.data)
-        }
-      })
+      this.isLoading = true
+      login(this.user)
+        .then((res) => {
+          console.log('登入成功', res)
+          this.isLoading = false
+          if (res) {
+            this.$router.push('/chat')
+          }
+        })
+        .catch((error) => console.log('登入失敗', error))
     }
   }
 }
