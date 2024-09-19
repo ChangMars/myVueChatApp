@@ -1,3 +1,4 @@
+/* eslint-disable vue/multi-word-component-names */
 import { createApp } from 'vue'
 import axios from 'axios'
 import VueAxios from 'vue-axios'

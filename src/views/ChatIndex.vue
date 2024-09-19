@@ -62,12 +62,12 @@ export default {
   },
   methods: {
     // This method will be called when a new message is sent
-    onSubmit(event, text) {
+    onSubmit (event, text) {
       console.log('chatindex-onsubmit')
       console.log('歷史聊天數量:', this.$store.state.ws.wsRes.length)
       sendSocketMessage(text)
     },
-    autoChatMsgStyle() {
+    autoChatMsgStyle () {
       // console.log('視窗高度',document.documentElement.clientHeight)
       // console.log('手風琴元件高度',this.$refs.accordionChatList.offsetHeight)
       this.appstyle.height =
@@ -77,7 +77,7 @@ export default {
         'px'
     }
   },
-  data() {
+  data () {
     return {
       appstyle: {
         height: 0 + 'px'
@@ -86,7 +86,7 @@ export default {
   },
   watch: {
     // 監聽vuex 中的變數是否發生變化
-    '$store.state.ws.wsRes.length'(n, o) {
+    '$store.state.ws.wsRes.length' (n, o) {
       console.log('訊息vuex數值發生變化', n, o)
       this.$nextTick(() => {
         // scroll刷新移動到最底部
@@ -95,13 +95,13 @@ export default {
       })
     }
   },
-  mounted() {
+  mounted () {
     // 在加載時根據窗口大小調整樣式
     this.autoChatMsgStyle()
-    let _this = this // 赋值vue的this 避免外部引用沒有vue 元件
+    const _this = this // 赋值vue的this 避免外部引用沒有vue 元件
     window.onresize = () => {
       // 監聽視窗改變時
-      //調用method事件
+      // 調用method事件
       _this.autoChatMsgStyle()
     }
     document // 監聽collapse元件隱藏事件

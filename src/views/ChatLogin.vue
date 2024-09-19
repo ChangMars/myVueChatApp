@@ -33,10 +33,9 @@
 
 <script>
 import { login } from '../utils/api'
-import { ref } from 'vue'
 
 export default {
-  data() {
+  data () {
     return {
       user: {
         username: '',
@@ -46,7 +45,7 @@ export default {
     }
   },
   methods: {
-    signIn() {
+    signIn () {
       this.isLoading = true
       login(this.user)
         .then((res) => {

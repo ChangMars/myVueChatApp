@@ -41,15 +41,15 @@ import { h } from 'vue'
 import { ElMessageBox } from 'element-plus'
 
 export default {
-  render() {
+  render () {
     return h('div')
   },
   props: ['dataMsg'],
   methods: {
-    onDetails(item) {
+    onDetails (item) {
       console.log('onDetails', item)
-      let newDatas = []
-      for (var key in item) {
+      const newDatas = []
+      for (const key in item) {
         newDatas.push(h('p', null, key + ':' + item[key]))
       }
       ElMessageBox({

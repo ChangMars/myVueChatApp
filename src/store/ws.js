@@ -11,13 +11,13 @@ export const actions = {
 
 export const mutations = {
   // 唯一可以同步修改state的func
-  setWs(state, payload) {
+  setWs (state, payload) {
     state.ws = payload
   },
-  setWsRes(state, payload) {
+  setWsRes (state, payload) {
     state.wsRes.push(payload)
   },
-  setClientRes(state, payload) {
+  setClientRes (state, payload) {
     console.log(payload)
     state.clientRes = payload
   }

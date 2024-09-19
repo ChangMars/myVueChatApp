@@ -1,9 +1,9 @@
-// import { useStore } from 'vuex' // 在app內部template才可以用這種方式引入
 import store from '../store' // 在app外部使用時用這種方式引入
+// import { useStore } from 'vuex' // 在app內部template才可以用這種方式引入
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
-const wsUrl = process.env.VUE_APP_WSURL
-var socket = null
+const wsUrl = process.env.VUE_APP_WSURL1
+let socket = null
 
 export const connectSocket = () => {
   const token = localStorage.getItem('token') // 獲取登入後token
@@ -82,8 +82,8 @@ export const sendSocketMessage = (text) => {
 
 export const getUserList = async () => {
   const api =
-  process.env.VUE_APP_API_HOST + "api/websocket/getroomuserdetail?RoomNo=1"
-  let _data = await axios.get(api).then((res) => {
+  process.env.VUE_APP_API_HOST + 'api/websocket/getroomuserdetail?RoomNo=1'
+  const _data = await axios.get(api).then((res) => {
     if (res.status === 200) {
       console.log('獲取聊天室列表成功')
       return res.data
@@ -98,8 +98,8 @@ export const login = async (user) => {
     'Content-Type': 'application/json;charset=utf-8'
   }
   const api =
-    process.env.VUE_APP_API_HOST + "api/authenticate/login"
-  let _data = await axios
+    process.env.VUE_APP_API_HOST + 'api/authenticate/login'
+  const _data = await axios
     .post(api, user)
     .then((res) => {
       console.log(res)
@@ -129,13 +129,13 @@ export const login = async (user) => {
 
 export const verifyLogin = async (token) => {
   const api =
-    process.env.VUE_APP_API_HOST + "api/authenticate/showuserrolesbyauth"
+    process.env.VUE_APP_API_HOST + 'api/authenticate/showuserrolesbyauth'
   // let tokene = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBZG1pbiBSb2xlIjoiQWRtaW4gUm9sZSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJQYXJhbXRlciIsIlFSQUNPcCIsIkFkbWluIiwiQ0JPZWVPcCIsIllaT2VlT3AiLCJQTU9lZU9wIl0sInN1YiI6IjAxNjg5MCIsImp0aSI6ImRkODBmMDViLTM2ZjItNDdjYy04YWM2LTQ0MTkwYmQzNGMwNCIsImV4cCI6MTY3Njk3MTgzOCwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo2MTk1NSIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDIwMCJ9.ZqnQoq9Z3071flQqZk3cNkfZJw60E2YjFQY1yw6F9s0'
   const headers = {
     accept: 'application/json',
     Authorization: `Bearer ${token}`
   }
-  let _data = await axios
+  const _data = await axios
     .get(api, { headers: headers })
     .then((res) => {
       if (res.status === 200) {

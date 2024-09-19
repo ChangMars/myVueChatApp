@@ -47,7 +47,7 @@ router.beforeEach((to, from, next) => {
   console.log('beforeEach', to, from)
 
   // 獲取使用者登入成功後儲存的登入標誌
-  let token = localStorage.getItem('token')
+  const token = localStorage.getItem('token')
   // console.log('存儲的token:', token)
 
   // 驗證token是否過期
@@ -67,17 +67,15 @@ router.beforeEach((to, from, next) => {
         } else {
           next()
         }
-      } //如果登入標誌不存在或驗證失敗，即未登入
-      else {
-        //使用者想進入需要登入的頁面，則定向回登入介面
+      } else { // 如果登入標誌不存在或驗證失敗，即未登入
+        // 使用者想進入需要登入的頁面，則定向回登入介面
         if (to.meta.isLogin) {
           console.log('重新導向login頁面')
           ElMessage('請先登入')
           next({
             path: '/login'
           })
-        } //使用者進入無需登入的介面，則跳轉繼續
-        else {
+        } else { // 使用者進入無需登入的介面，則跳轉繼續
           next()
         }
       }

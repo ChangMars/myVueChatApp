@@ -25,9 +25,9 @@ export default {
     'dark' // Background variant of the box
   ],
   methods: {
-    isImgUrlValid(imgurl) {
+    isImgUrlValid (imgurl) {
       return new Promise(function (resolve, reject) {
-        var ImgObj = new Image() //判断图片是否存在
+        const ImgObj = new Image() // 判断图片是否存在
         ImgObj.src = imgurl
         ImgObj.onload = function (res) {
           resolve(res)
@@ -37,11 +37,11 @@ export default {
         }
       }).catch((e) => {})
     },
-    isImgUrl(imgurl) {
+    isImgUrl (imgurl) {
       return (/\w.(png|jpg|jpeg|svg|webp|gif|bmp)$/i.test(imgurl) || /\w.(png|jpg|jpeg|svg|webp|gif|bmp)\?/i.test(imgurl))
     }
   },
-  data() {
+  data () {
     return {
       haveImgUrl: false,
       url: '',
@@ -49,12 +49,12 @@ export default {
     }
   },
   computed: {
-    msgfomat() {
+    msgfomat () {
       // 將網址分離出來
       let textR = this.text
-      let reg =
+      const reg =
         /(https?|ftp|file)(:\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|])/g
-      let arr = textR.match(reg) || []
+      const arr = textR.match(reg) || []
 
       // 處理網址是圖片的
       arr.forEach((element) => {

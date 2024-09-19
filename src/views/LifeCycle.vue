@@ -5,24 +5,23 @@
 
 <script>
 import Card from '@/components/ChatCard.vue'
-import { Console } from 'console'
 
 export default {
   components: {
     Card
   },
-  setup() {},
-  beforeCreate() {},
+  setup () {},
+  beforeCreate () {},
   inject: ['inject1'],
   props: ['props1'],
   // methods需要靠事件觸發渲染，只要有觸發就會重新計算求值，所以像前面的範例一定需要加上()
   methods: {
     // methods可以攜帶參數 , methods不一定要return
-    func1(text) {
+    func1 (text) {
       console.log('func1', text)
     }
   },
-  data() {
+  data () {
     return {
       param1: 'param1'
     }
@@ -30,24 +29,24 @@ export default {
   // computed只有在依賴的資料改變時才會重新計算求值，儘管在模板中多次調用 computed、或是改變其他資料觸發畫面再重新渲染，只要 computed property 原始依賴響應的資料 沒有更動，就不會重新計算求值。
   computed: {
     // computed不能攜帶參數 , computed 一定要使用return
-    func2() {
+    func2 () {
       console.log('func2')
-      ret
+      return false
     }
   },
   watch: {
-    'param1'(n, o) { // 監聽param1 中的變數是否發生變化
+    'param1' (n, o) { // 監聽param1 中的變數是否發生變化
       console.log('watch')
       console.log(n, o)
     }
   },
-  provide() {
+  provide () {
     return {
-      emitter,
-    };
+      Card
+    }
   },
-  created() {},
-  beforeMount() {},
-  mounted() {}
+  created () {},
+  beforeMount () {},
+  mounted () {}
 }
 </script>

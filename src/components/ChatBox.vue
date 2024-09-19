@@ -14,7 +14,7 @@ export default {
   }),
   methods: {
     // We will call this when the form is submitted
-    onSubmit(event) {
+    onSubmit (event) {
       // This fires an event which we will handle
       // in the parent component
       this.$emit('emit-submit', event, this.text)

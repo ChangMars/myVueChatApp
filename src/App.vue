@@ -62,32 +62,32 @@ import { connectSocket } from './utils/api'
 import { ElMessage } from 'element-plus'
 
 export default {
-  setup() {},
+  setup () {},
   computed: {
-    onIsLoign() {
+    onIsLoign () {
       console.log('onIsLoign')
       return this.$store.state.isLogin
     }
   },
   methods: {
-    onSubmit(event) {
+    onSubmit (event) {
       ElMessage(
         '您要查詢的使用者為:' + this.searchText + '。此功能後端API開發中'
       )
     },
-    onLogout(event) {
+    onLogout (event) {
       localStorage.removeItem('token') // 移除紀錄的token
       this.$store.state.ws.ws.close() // 關閉ws連線
       this.$store.dispatch('setUser', false) // 登入標籤設定為false
       ElMessage('登出')
     }
   },
-  data() {
+  data () {
     return {
       searchText: ''
     }
   },
-  created() {
+  created () {
     connectSocket()
   }
 }
